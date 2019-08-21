@@ -32,6 +32,7 @@ namespace ELearning.Models
         }
 
         // KOmentar za git
+        //AJde ushte eden komentar z
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
