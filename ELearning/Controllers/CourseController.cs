@@ -22,12 +22,11 @@ namespace ELearning.Controllers
         private readonly ILogger<CourseController> _logger;
        // private readonly LinkGenerator _linkGenerator;
 
-        public CourseController(IELearningRepository repository, IMapper mapper, ILogger<CourseController> logger)//, LinkGenerator linkGenerator)
+        public CourseController(IELearningRepository repository, IMapper mapper, ILogger<CourseController> logger)
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
-          //  _linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -146,24 +145,6 @@ namespace ELearning.Controllers
 
         }
 
-        ////Get Course by ID
-        //[HttpGet("course/{courseID}")]
-        //public async Task<ActionResult<CourseDTO>> GetCourse(int courseID)
-        //{
-        //    try
-        //    {
-        //        var result = await _repository.GetCourseAsync(courseID);
-        //        IMapper mapper = ELearningProfile.CourseMapper();
-
-        //        return mapper.Map<CourseDTO>(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Failed to get the course:{ex}");
-        //        return BadRequest("Failed to get the course");
-        //    }
-        //}
-
         /// <summary>
         /// Get single course by Course Id.
         /// </summary>
@@ -226,27 +207,22 @@ namespace ELearning.Controllers
         public ActionResult<PostCourseDTO> PostCourse([FromBody] PostCourseDTO model)
         {
             try
-            {
-                
+            {              
                 var category =  _repository.GetCategoryById(model.CategoryID);
                 if (category == null) return BadRequest("Category could not be find");
       
-
                 var subCategory = _repository.GetSubCategoryById(model.SubCategoryID);
                 if (subCategory == null) return BadRequest("SubCategory could not be find");
         
-
                 var author =  _repository.GetAuthorById(model.AuthorID);
                 if (author == null) return BadRequest("Author could not be find");
      
-
                 foreach(var courseInfo in model.CourseInfo)
                 {
                     var courseLevel = _repository.GetCourseLevelById(courseInfo.CourseLevel.CourseLevelId);
                     if (courseLevel == null) return BadRequest("Course level could not be find");
 
                 }
-
 
                 IMapper mapper = ELearningProfile.PostCourse();
                 var course = mapper.Map<Course>(model);
@@ -288,28 +264,6 @@ namespace ELearning.Controllers
                 return BadRequest();
             }
         }
-
-        // Search Course By CourseName
-        //[HttpGet("search")]
-        //public ActionResult<CourseDTO> SearchCourse(string courseName)
-        //{
-        //    try
-        //    {
-        //        var searchCourse = _repository.SearchCourseByCourseName(courseName);
-
-        //        if (!searchCourse.CourseName.Any()) return NotFound();
-
-        //        IMapper mapper = ELearningProfile.CourseMapper();
-
-        //        return mapper.Map<CourseDTO>(searchCourse);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Failed to find the course with the given name: {ex}");
-        //        return BadRequest();
-        //    }
-        //}
-
 
         /// <summary>
         /// Search course by CourseName.

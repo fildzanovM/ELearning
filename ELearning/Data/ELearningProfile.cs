@@ -165,8 +165,8 @@ namespace ELearning.Data
             return mapper;
         }
 
-        //Author Module
-        public static IMapper AuthorModule()
+        //Author Mapper
+        public static IMapper AuthorMapper()
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -237,8 +237,7 @@ namespace ELearning.Data
             IMapper mapper = config.CreateMapper();
             return mapper;
         }
-        
-        
+               
         //Categories with array of courses
         public static IMapper CoursesByCategories()
         {

@@ -20,20 +20,6 @@ namespace ELearning.Data
             _logger = logger;
         }
 
-        //Add entity
-        //public void Add<T>(T entity) where T : class
-        //{
-        //    _logger.LogInformation($"Adding an object of type {entity.GetType()} to the context.");
-        //    _dBContext.Add(entity);
-        //}
-
-        ////Delete entity
-        //public void Delete<T>(T entity) where T : class
-        //{
-        //    _logger.LogInformation($"Removing an object of type {entity.GetType()} to the context.");
-        //    _dBContext.Remove(entity);
-        //}
-
         //Save changes
         public async Task<bool> SaveChangesAsync()
         {
@@ -72,6 +58,7 @@ namespace ELearning.Data
             return await query.ToArrayAsync();
         }
 
+        //Get array of Courses by Category Id
         public Course[] GetCourseByCategoryID(int categoryID)
         {
             _logger.LogInformation($"Getting course by CategoryID");
@@ -94,7 +81,7 @@ namespace ELearning.Data
             return await query.ToArrayAsync();
         }
 
-        //Get All Courses 
+        //Get All Courses async
         public async Task<Course[]> GetAllCourses()
         {
             _logger.LogInformation($"Getting all courses");
@@ -110,6 +97,7 @@ namespace ELearning.Data
             return await query.ToArrayAsync();
         }
 
+        // Get All Courses by CourseName
         public Course[] AllCourses( string courseName)
         {
             _logger.LogInformation($"Getting all courses");
@@ -146,7 +134,7 @@ namespace ELearning.Data
             return await query.ToArrayAsync();
         }
 
-        //Get Category by ID
+        //Get Category by ID async
         public async Task<Category> GetCategoryAsync(int categoryID)
         {
             _logger.LogInformation($"Getting Category");
@@ -157,6 +145,7 @@ namespace ELearning.Data
             return await query.FirstOrDefaultAsync();
         }
 
+        //Get single Category by Category Id
         public Category GetCategoryById(int categoryId)
         {
             var category = _dBContext.Category
@@ -165,6 +154,7 @@ namespace ELearning.Data
             return category.FirstOrDefault();
         }
 
+        //Get single CourseLevel by CourseLevel Id
         public CourseLevel GetCourseLevelById(int courseLevelId)
         {
             _logger.LogInformation($"Getting CourseLevel");
@@ -176,7 +166,7 @@ namespace ELearning.Data
         }
 
 
-        // Get SubCategory by ID
+        // Get SubCategory by ID async
         public async Task<SubCategory> GetSubCategoryAsync(int subCategoryID)
         {
             _logger.LogInformation($"Getting SubCategory");
@@ -187,6 +177,7 @@ namespace ELearning.Data
             return await query.FirstOrDefaultAsync();
         }
 
+        //Get single SubCategory by SubCategoryId
         public SubCategory GetSubCategoryById(int subCategoryId)
         {
             var subCategory = _dBContext.SubCategory
@@ -195,7 +186,7 @@ namespace ELearning.Data
             return subCategory.FirstOrDefault();
         }
 
-        //Get Author by ID
+        //Get Author by ID async
         public async Task<Author> GetAuthorAsync(int authorID)
         {
             _logger.LogInformation($"Getting Author");
@@ -206,6 +197,7 @@ namespace ELearning.Data
             return await query.FirstOrDefaultAsync();
         }
 
+        //Get single Author by Id
         public Author GetAuthorById(int authorID)
         {
             var author = _dBContext.Author.Include(o => o.Course)
@@ -214,6 +206,7 @@ namespace ELearning.Data
             return author.FirstOrDefault();
         }
 
+        //Get All Authors
         public Author[] GetAllAuthors()
         {
             _logger.LogInformation("Getting all Authors");
@@ -237,6 +230,7 @@ namespace ELearning.Data
             return await query.FirstOrDefaultAsync();
         }
 
+        //Get single Course by CourseId
         public Course GetCourseById(int courseId)
         {
             var course = _dBContext.Course.Where(o => o.CourseId == courseId)
@@ -251,6 +245,7 @@ namespace ELearning.Data
 
             return course;
         }
+
         // Search Course By CourseName
         public Course SearchCourseByCourseName(string courseName)
         {
@@ -263,16 +258,6 @@ namespace ELearning.Data
             return course;
 
         }
-
-        //public CourseInfo GetCourseInfoById(int courseInfoId)
-        //{
-        //    _logger.LogInformation($"Getting Counse Info");
-        //    var result = _dBContext.CourseInfo.Include(o => o.CourseLevel)
-        //        .Where(o => o.CourseInfoId == courseInfoId).FirstOrDefault();
-
-        //    return result;
-
-        //}
 
         //SearchCourse
         public List<Course> SearchCourse(string courseName)
@@ -301,7 +286,6 @@ namespace ELearning.Data
 
         }
         
-
         // Create Course with Modules
         public void AddCourse(Course course)
         {
@@ -337,13 +321,14 @@ namespace ELearning.Data
         
         }
 
+        //Add Author
         public void AddAuthor(Author author)
         {
             _dBContext.Author.Add(author);
             _dBContext.SaveChanges();
         }
 
-     //   Delete Course
+        //Delete Course
         public void DeleteCourse(Course course)
         {
             if (course.CourseModule.Any())

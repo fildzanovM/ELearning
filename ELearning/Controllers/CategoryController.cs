@@ -75,6 +75,7 @@ namespace ELearning.Controllers
         /// <summary>
         /// Get single category with Category Id.
         /// </summary>
+        /// <param name="categoryID">Data to create the houshold from.</param>
         /// <response code="200">Succesfully returns the Category</response>
         /// <response code="400">If the item is null</response> 
         //Get Category

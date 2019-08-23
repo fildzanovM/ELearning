@@ -37,6 +37,7 @@ namespace ELearning.ViewModel
         public ICollection<CourseInfoForAllCourses> CourseInfo { get; set; }
     }
 
+    // Course Info for AllCoursesDTO
     public class CourseInfoForAllCourses
     {
         public string CourseDuration { get; set; }
@@ -117,6 +118,7 @@ namespace ELearning.ViewModel
         public  string CoursePrice { get; set; }
         public string  CourseDuration { get; set; }
     }
+   
     //Get Course By Category Data Transfer Object
     public class CourseByCategoryDTO
     {
@@ -128,6 +130,7 @@ namespace ELearning.ViewModel
         public ICollection<CourseInfoForCategories> CourseInfo { get; set; }
     }
 
+    //Post Author
     public class PostAuthorDTO
     {
         public string AuthorFirstName{ get; set; }
@@ -137,12 +140,14 @@ namespace ELearning.ViewModel
         public string AuthorImage { get; set; }
     }
 
+    //Search Course
     public class SearchCourseDTO
     {
         public int CourseId { get; set; }
         public string CourseName { get; set; }
     }
 
+    // List All Authors
     public class AllAuthorsDTO
     {
         public int AuthorId { get; set; }
@@ -150,12 +155,14 @@ namespace ELearning.ViewModel
 
     }
 
+    //List All Course Levels
     public class CourseLevelDTO
     {
         public int CourseLevelId { get; set; }
      //   public string CourseLevelName { get; set; }
     }
 
+    // Post Course Info 
     public class PostCourseInfoDTO
     {
         public string CourseDuration { get; set; }

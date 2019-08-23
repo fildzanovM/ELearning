@@ -13,6 +13,7 @@ namespace ELearning.ViewModel
 
     }
 
+    //Category DTO for Categories with array of courses
     public class CategoryWithCourses
     {
         public int CategoryId { get; set; }
@@ -22,7 +23,7 @@ namespace ELearning.ViewModel
 
     }
 
-
+    //DTO Courses for Categories
     public class CoursesForCategory
     {
         public int CourseID { get; set; }

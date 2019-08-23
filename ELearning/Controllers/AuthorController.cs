@@ -39,7 +39,7 @@ namespace ELearning.Controllers
             try
             {
                 var result = _repository.GetAuthorById(authorID);
-                IMapper mapper = ELearningProfile.AuthorModule();
+                IMapper mapper = ELearningProfile.AuthorMapper();
 
                 return mapper.Map<AuthorDTO>(result);
 
@@ -73,6 +73,8 @@ namespace ELearning.Controllers
                 return BadRequest("Failed to get all Authors");
             }
         }
+
+        
 
         /// <summary>
         /// Post Author.
