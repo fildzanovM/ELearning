@@ -10,9 +10,9 @@ namespace ELearning.Models
         public string CourseDuration { get; set; }
         public int CourseId { get; set; }
         public int? CourseLevelId { get; set; }
-        public int? CoursePrice { get; set; }
+        public double? CoursePrice { get; set; }
 
-        public virtual Course Course { get; set; }
-        public virtual CourseLevel CourseLevel { get; set; }
+        public Course Course { get; set; }
+        public CourseLevel CourseLevel { get; set; }
     }
 }

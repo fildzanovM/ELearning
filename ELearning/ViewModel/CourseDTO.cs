@@ -18,6 +18,7 @@ namespace ELearning.ViewModel
         public string CourseSubCategory { get; set; }
         public string CourseAuthor { get; set; }
         public ICollection<PostCourseModule> CourseModule { get; set; }
+        public ICollection<CourseInfoForAllCourses> CourseInfo { get; set; }
     }
 
     //All Courses Data Transfer Object
@@ -33,6 +34,14 @@ namespace ELearning.ViewModel
         public string CourseCategory { get; set; }
 
         public ICollection<PostCourseModule> CourseModule { get; set; }
+        public ICollection<CourseInfoForAllCourses> CourseInfo { get; set; }
+    }
+
+    public class CourseInfoForAllCourses
+    {
+        public string CourseDuration { get; set; }
+        public double CoursePrice { get; set; }
+        public string CourseLevel { get; set; }
     }
 
     //Course Info Data Transfer Object
@@ -77,6 +86,9 @@ namespace ELearning.ViewModel
 
         public ICollection<PostCourseModule> CourseModule { get; set; }
             = new List<PostCourseModule>();
+
+        public ICollection<PostCourseInfoDTO> CourseInfo { get; set; }
+            = new List<PostCourseInfoDTO>();
 
     }
 
@@ -136,5 +148,18 @@ namespace ELearning.ViewModel
         public int AuthorId { get; set; }
         public string AuthorName { get; set; }
 
+    }
+
+    public class CourseLevelDTO
+    {
+        public int CourseLevelId { get; set; }
+     //   public string CourseLevelName { get; set; }
+    }
+
+    public class PostCourseInfoDTO
+    {
+        public string CourseDuration { get; set; }
+        public double? CoursePrice { get; set; }
+        public CourseLevelDTO CourseLevel { get; set; }
     }
 }

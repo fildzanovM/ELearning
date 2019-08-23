@@ -103,6 +103,8 @@ namespace ELearning.Data
             query = query.Include(o => o.SubCategory)
                 .Include(o => o.Category)
                 .Include(o => o.CourseModule)
+                .Include(o => o.CourseInfo)
+                .ThenInclude(o => o.CourseLevel)
                 .OrderBy(t => t.CourseId);
 
             return await query.ToArrayAsync();
@@ -161,6 +163,16 @@ namespace ELearning.Data
                 .Where(o => o.CategoryId == categoryId);
 
             return category.FirstOrDefault();
+        }
+
+        public CourseLevel GetCourseLevelById(int courseLevelId)
+        {
+            _logger.LogInformation($"Getting CourseLevel");
+
+            var courseLevel = _dBContext.CourseLevel
+                .Where(o => o.CourseLevelId == courseLevelId).FirstOrDefault();
+
+            return courseLevel;
         }
 
 
@@ -231,7 +243,10 @@ namespace ELearning.Data
                 .Include(o => o.Author)
                 .Include(o => o.Category)
                 .Include(o => o.SubCategory)
-                .Include(o => o.CourseModule).FirstOrDefault();
+                .Include(o => o.CourseModule)
+                .Include(o => o.CourseInfo)
+                .ThenInclude(o => o.CourseLevel)
+                .FirstOrDefault();
 
 
             return course;
@@ -248,6 +263,16 @@ namespace ELearning.Data
             return course;
 
         }
+
+        //public CourseInfo GetCourseInfoById(int courseInfoId)
+        //{
+        //    _logger.LogInformation($"Getting Counse Info");
+        //    var result = _dBContext.CourseInfo.Include(o => o.CourseLevel)
+        //        .Where(o => o.CourseInfoId == courseInfoId).FirstOrDefault();
+
+        //    return result;
+
+        //}
 
         //SearchCourse
         public List<Course> SearchCourse(string courseName)
@@ -266,6 +291,9 @@ namespace ELearning.Data
                 .Include(o => o.Course)
                 .ThenInclude(o => o.Author)
                 .Include(o => o.SubCategory)
+                .Include(o => o.Course)
+                .ThenInclude(o => o.CourseInfo)
+                .ThenInclude(o => o.CourseLevel)
                 .ToArray();
              
 
@@ -290,6 +318,20 @@ namespace ELearning.Data
                     };
 
                     _dBContext.SaveChanges();
+                }
+            }
+
+            if (course.CourseInfo.Any())
+            {
+                foreach (var courseInfo in course.CourseInfo)
+                {
+                    PostCourseInfoDTO postCourseInfo = new PostCourseInfoDTO
+                    {
+                        CoursePrice = courseInfo.CoursePrice,
+                        CourseDuration = courseInfo.CourseDuration,
+                    
+                    };
+                 
                 }
             }
         

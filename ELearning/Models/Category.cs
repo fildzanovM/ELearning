@@ -15,7 +15,7 @@ namespace ELearning.Models
         public string CategoryName { get; set; }
         public string CategoryImage { get; set; }
 
-        public virtual ICollection<Course> Course { get; set; }
-        public virtual ICollection<SubCategory> SubCategory { get; set; }
+        public ICollection<Course> Course { get; set; }
+        public ICollection<SubCategory> SubCategory { get; set; }
     }
 }

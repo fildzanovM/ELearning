@@ -19,10 +19,10 @@ namespace ELearning.Models
         public int SubCategoryId { get; set; }
         public string CourseImage { get; set; }
 
-        public virtual Author Author { get; set; }
-        public virtual Category Category { get; set; }
-        public virtual SubCategory SubCategory { get; set; }
-        public virtual ICollection<CourseInfo> CourseInfo { get; set; }
-        public virtual ICollection<CourseModule> CourseModule { get; set; }
+        public Author Author { get; set; }
+        public Category Category { get; set; }
+        public SubCategory SubCategory { get; set; }
+        public ICollection<CourseInfo> CourseInfo { get; set; }
+        public ICollection<CourseModule> CourseModule { get; set; }
     }
 }

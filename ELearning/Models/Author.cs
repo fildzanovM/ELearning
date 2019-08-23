@@ -17,6 +17,6 @@ namespace ELearning.Models
         public string AuthorTelephone { get; set; }
         public string AuthorImage { get; set; }
 
-        public virtual ICollection<Course> Course { get; set; }
+        public ICollection<Course> Course { get; set; }
     }
 }

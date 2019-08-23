@@ -18,6 +18,7 @@ namespace ELearning.ViewModel
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public ICollection<CoursesForCategory> Courses { get; set; }
+    
 
     }
 
@@ -30,5 +31,7 @@ namespace ELearning.ViewModel
         public string CourseImage { get; set; }
         public string CourseAuthor { get; set; }
         public string SubCategoryName { get; set; }
+        public ICollection<CourseInfoForAllCourses> CourseInfo { get; set; }
+
     }
 }

@@ -11,6 +11,6 @@ namespace ELearning.Models
         public string ModuleDuration { get; set; }
         public string ModuleVideo { get; set; }
 
-        public virtual Course Course { get; set; }
+        public Course Course { get; set; }
     }
 }

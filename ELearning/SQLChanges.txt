@@ -1,0 +1,4 @@
+﻿ALTER TABLE CourseInfo 
+ALTER COLUMN CoursePrice float
+
+Scaffold-DbContext "Server=DESKTOP-HR3RL14\EXPRESSSQL;Database=ELearningDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f

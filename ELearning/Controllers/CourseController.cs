@@ -191,6 +191,31 @@ namespace ELearning.Controllers
         }
 
         /// <summary>
+        /// Get single Course level by CourseLevel Id.
+        /// </summary>
+        /// <param name="courseLevelId">Data to create the houshold from.</param>
+        /// <response code="200">Succesfully returns course level</response>
+        /// <response code="400">If the item is null</response> 
+        //Get CourseLevel by ID
+        [HttpGet("courselevel/get")]
+        public ActionResult<CourseLevelDTO> GetCourseLevelById(int courseLevelId)
+        {
+            try
+            {
+                var result = _repository.GetCourseLevelById(courseLevelId);
+                IMapper mapper = ELearningProfile.CourseLevelMapper();
+
+                return mapper.Map<CourseLevelDTO>(result);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to get course levels:{ex}");
+                return BadRequest("Failed to get course levels");
+            }
+        }
+
+        /// <summary>
         /// Post course and array of modules.
         /// </summary>
         /// <param name="model">Data to create the houshold from.</param>
@@ -202,23 +227,31 @@ namespace ELearning.Controllers
         {
             try
             {
-                IMapper mapper = ELearningProfile.PostCourse();
-                var course = mapper.Map<Course>(model);
-
+                
                 var category =  _repository.GetCategoryById(model.CategoryID);
                 if (category == null) return BadRequest("Category could not be find");
-                course.Category = category;
+      
 
                 var subCategory = _repository.GetSubCategoryById(model.SubCategoryID);
                 if (subCategory == null) return BadRequest("SubCategory could not be find");
-                course.SubCategory = subCategory;
+        
 
                 var author =  _repository.GetAuthorById(model.AuthorID);
                 if (author == null) return BadRequest("Author could not be find");
-                course.Author = author;
+     
 
-                
-                 _repository.AddCourse(course);
+                foreach(var courseInfo in model.CourseInfo)
+                {
+                    var courseLevel = _repository.GetCourseLevelById(courseInfo.CourseLevel.CourseLevelId);
+                    if (courseLevel == null) return BadRequest("Course level could not be find");
+
+                }
+
+
+                IMapper mapper = ELearningProfile.PostCourse();
+                var course = mapper.Map<Course>(model);
+
+                _repository.AddCourse(course);
                 return new ObjectResult(new { message = "success", statusCode = HttpStatusCode.OK, response = "Created course" });
 
             }

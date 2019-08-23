@@ -42,18 +42,22 @@ namespace ELearning.Data
         {
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Course, CourseDTO>()
+                 .ForMember(o => o.CourseID, ex => ex.MapFrom(o => o.CourseId))
+                 .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
+                 .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
+                 .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
+                 .ForMember(o => o.CourseCategory, ex => ex.MapFrom(o => o.Category.CategoryName))
+                 .ForMember(o => o.CourseSubCategory, ex => ex.MapFrom(o => o.SubCategory.SubCategoryName))
+                 .ForMember(o => o.CourseAuthor, ex => ex.MapFrom(o => o.Author.AuthorFirstName + " " + (o.Author.AuthorLastName)));
+
                 cfg.CreateMap<CourseModule, PostCourseModule>()
                     .ForMember(o => o.ModuleName, ex => ex.MapFrom(o => o.CourseModuleName));
 
-                cfg.CreateMap<Course, CourseDTO>()
-                    .ForMember(o => o.CourseID, ex => ex.MapFrom(o => o.CourseId))
-                    .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
-                    .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
-                    .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
-                    .ForMember(o => o.CourseCategory, ex => ex.MapFrom(o => o.Category.CategoryName))
-                    .ForMember(o => o.CourseSubCategory, ex => ex.MapFrom(o => o.SubCategory.SubCategoryName))
-                    .ForMember(o => o.CourseAuthor, ex => ex.MapFrom(o => o.Author.AuthorFirstName + " " + (o.Author.AuthorLastName)))
-                    .ForMember(o => o.CourseModule, ex => ex.MapFrom(o => o.CourseModule));
+                cfg.CreateMap<CourseInfo, CourseInfoForAllCourses>()
+                    .ForMember(o => o.CoursePrice, ex => ex.MapFrom(o => o.CoursePrice))
+                    .ForMember(o => o.CourseDuration, ex => ex.MapFrom(o => o.CourseDuration))
+                    .ForMember(o => o.CourseLevel, ex => ex.MapFrom(o => o.CourseLevel.CourseLevelName));
             });
 
             IMapper mapper = config.CreateMapper();
@@ -65,20 +69,25 @@ namespace ELearning.Data
         {
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Course, AllCourses>()
+               .ForMember(o => o.CourseID, ex => ex.MapFrom(o => o.CourseId))
+               .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
+               .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
+               .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
+               .ForMember(o => o.SubCategoryName, ex => ex.MapFrom(o => o.SubCategory.SubCategoryName))
+               .ForMember(o => o.CourseCategory, ex => ex.MapFrom(o => o.Category.CategoryName))
+               .ForMember(o => o.CourseAuthor, ex => ex.MapFrom(o => o.Author.AuthorFirstName + " " + (o.Author.AuthorLastName)))
+               .ForMember(o => o.CourseModule, ex => ex.MapFrom(o => o.CourseModule));
+
                 cfg.CreateMap<CourseModule, PostCourseModule>()
                     .ForMember(o => o.ModuleName, ex => ex.MapFrom(o => o.CourseModuleName))
                 .ForMember(o => o.ModuleDuration, ex => ex.MapFrom(o => o.ModuleDuration));
-                    
 
-                cfg.CreateMap<Course, AllCourses>()
-                    .ForMember(o => o.CourseID, ex => ex.MapFrom(o => o.CourseId))
-                    .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
-                    .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
-                    .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
-                    .ForMember(o => o.SubCategoryName, ex => ex.MapFrom(o => o.SubCategory.SubCategoryName))
-                    .ForMember(o => o.CourseCategory, ex => ex.MapFrom(o => o.Category.CategoryName))
-                    .ForMember(o => o.CourseAuthor, ex => ex.MapFrom(o => o.Author.AuthorFirstName + " " + (o.Author.AuthorLastName)))
-                    .ForMember(o => o.CourseModule, ex => ex.MapFrom(o => o.CourseModule));
+                cfg.CreateMap<CourseInfo, CourseInfoForAllCourses>()
+                    .ForMember(o => o.CoursePrice, ex => ex.MapFrom(o => o.CoursePrice))
+                    .ForMember(o => o.CourseDuration, ex => ex.MapFrom(o => o.CourseDuration))
+                    .ForMember(o => o.CourseLevel, ex => ex.MapFrom(o => o.CourseLevel.CourseLevelName));
+                 
             });
 
             IMapper mapper = config.CreateMapper();
@@ -124,22 +133,31 @@ namespace ELearning.Data
         {
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap<Course, PostCourseDTO>()
+                   .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
+                   .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
+                   .ForMember(o => o.AuthorID, ex => ex.MapFrom(o => o.AuthorId))
+                   .ForMember(o => o.CategoryID, ex => ex.MapFrom(o => o.CategoryId))
+                   .ForMember(o => o.SubCategoryID, ex => ex.MapFrom(o => o.SubCategoryId))
+                   .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
+                   .ReverseMap();
+
                 cfg.CreateMap<CourseModule, PostCourseModule>()
                 .ForMember(o => o.ModuleName, ex => ex.MapFrom(o => o.CourseModuleName))
                 .ForMember(o => o.ModuleDuration, ex => ex.MapFrom(o => o.ModuleDuration))
+                .ForMember(o => o.ModuleVideo, ex => ex.MapFrom(o => o.ModuleVideo))
                 .ReverseMap();
 
-                cfg.CreateMap<Course, PostCourseDTO>()
-                    .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.CourseName))
-                    .ForMember(o => o.CourseDescription, ex => ex.MapFrom(o => o.CourseDescription))
-                    .ForMember(o => o.AuthorID, ex => ex.MapFrom(o => o.AuthorId))
-                    .ForMember(o => o.CategoryID, ex => ex.MapFrom(o => o.CategoryId))
-                    .ForMember(o => o.SubCategoryID, ex => ex.MapFrom(o => o.SubCategoryId))
-                    .ForMember(o => o.CourseImage, ex => ex.MapFrom(o => o.CourseImage))
-                    .ForMember(o => o.CourseModule, ex => ex.MapFrom(o => o.CourseModule))
+                cfg.CreateMap<CourseInfo, PostCourseInfoDTO>()
+                    .ForMember(o => o.CoursePrice, ex => ex.MapFrom(o => o.CoursePrice))
+                    .ForMember(o => o.CourseDuration, ex => ex.MapFrom(o => o.CourseDuration))
+                    .ForMember(o => o.CourseLevel, ex => ex.MapFrom(o => o.CourseLevel))
                     .ReverseMap();
 
-        
+                cfg.CreateMap<CourseLevel, CourseLevelDTO>()
+                    .ForMember(o => o.CourseLevelId, ex => ex.MapFrom(o => o.CourseLevelId))
+                   // .ForMember(o => o.CourseLevelName, ex => ex.MapFrom(o => o.CourseLevelName))
+                   .ReverseMap();
 
             });
 
@@ -239,6 +257,11 @@ namespace ELearning.Data
                     .ForMember(o => o.CategoryName, ex => ex.MapFrom(o => o.CategoryName))
                     .ForMember(o => o.Courses, ex => ex.MapFrom(o => o.Course));
 
+                cfg.CreateMap<CourseInfo, CourseInfoForAllCourses>()
+                    .ForMember(o => o.CoursePrice, ex => ex.MapFrom(o => o.CoursePrice))
+                    .ForMember(o => o.CourseDuration, ex => ex.MapFrom(o => o.CourseDuration))
+                    .ForMember(o => o.CourseLevel, ex => ex.MapFrom(o => o.CourseLevel.CourseLevelName));
+
             });
 
             IMapper mapper = config.CreateMapper();
@@ -253,6 +276,20 @@ namespace ELearning.Data
                 cfg.CreateMap<Author, AllAuthorsDTO>()
                     .ForMember(o => o.AuthorId, ex => ex.MapFrom(o => o.AuthorId))
                     .ForMember(o => o.AuthorName, ex => ex.MapFrom(o => o.AuthorFirstName + " " + (o.AuthorLastName)));
+            });
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+
+        //Course Level Mapper
+        public static IMapper CourseLevelMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CourseLevel, CourseLevelDTO>()
+                    .ForMember(o => o.CourseLevelId, ex => ex.MapFrom(o => o.CourseLevelId));
+                 //   .ForMember(o => o.CourseLevelName, ex => ex.MapFrom(o => o.CourseLevelName));
             });
 
             IMapper mapper = config.CreateMapper();

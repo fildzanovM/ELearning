@@ -43,8 +43,12 @@ namespace ELearning.Data
 
         //CourseInfo
         Task<CourseInfo[]> GetCourseInfoByCourseID(int courseID);
+        //CourseInfo GetCourseInfoById(int courseInfoId);
 
         //CourseModule
         Task<CourseModule[]> GetCourseModuleByCourseID(int courseID);
+
+        //CourseLevel
+        CourseLevel GetCourseLevelById(int courseLevelId);
     }
 }

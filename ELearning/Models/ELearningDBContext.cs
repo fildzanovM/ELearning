@@ -27,16 +27,13 @@ namespace ELearning.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-HR3RL14\\EXPRESSSQL;Database=ELearningDB;Trusted_Connection=True;");
             }
         }
 
-        // KOmentar za git
-        //AJde ushte eden komentar z
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.Property(e => e.AuthorId).HasColumnName("AuthorID");
@@ -51,7 +48,9 @@ namespace ELearning.Models
                     .HasMaxLength(256)
                     .IsUnicode(false);
 
-                entity.Property(e => e.AuthorImage).HasMaxLength(500);
+                entity.Property(e => e.AuthorImage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.AuthorLastName)
                     .IsRequired()
@@ -88,7 +87,9 @@ namespace ELearning.Models
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CourseImage).HasMaxLength(500);
+                entity.Property(e => e.CourseImage)
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CourseName)
                     .IsRequired()

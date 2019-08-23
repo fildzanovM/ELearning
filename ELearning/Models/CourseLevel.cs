@@ -13,6 +13,6 @@ namespace ELearning.Models
         public int CourseLevelId { get; set; }
         public string CourseLevelName { get; set; }
 
-        public virtual ICollection<CourseInfo> CourseInfo { get; set; }
+        public ICollection<CourseInfo> CourseInfo { get; set; }
     }
 }
