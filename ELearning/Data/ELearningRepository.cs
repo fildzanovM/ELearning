@@ -96,7 +96,7 @@ namespace ELearning.Data
 
             return await query.ToArrayAsync();
         }
-
+  
         // Get All Courses by CourseName
         public Course[] AllCourses( string courseName)
         {
@@ -163,6 +163,15 @@ namespace ELearning.Data
                 .Where(o => o.CourseLevelId == courseLevelId).FirstOrDefault();
 
             return courseLevel;
+        }
+
+        //Get All CourseLevels 
+        public CourseLevel[] GetAllCourseLevels()
+        {
+            _logger.LogInformation($"Getting all CourseLevels");
+            var courseLevels = _dBContext.CourseLevel.OrderBy(o => o.CourseLevelId).ToArray();
+
+            return courseLevels;
         }
 
 
@@ -313,7 +322,7 @@ namespace ELearning.Data
                     {
                         CoursePrice = courseInfo.CoursePrice,
                         CourseDuration = courseInfo.CourseDuration,
-                    
+                   
                     };
                  
                 }
@@ -328,6 +337,27 @@ namespace ELearning.Data
             _dBContext.SaveChanges();
         }
 
+        //Add Purchase 
+        public void AddPurchase(Purchases purchases)
+        {
+            DateTime dateTime = DateTime.Now;
+            purchases.PurchaseDate = dateTime;
+            _dBContext.Purchases.Add(purchases);
+            _dBContext.SaveChanges();
+        }
+
+        //Get All Purchases
+        public Purchases[] GetAllPurchases()
+        {
+            _logger.LogInformation($"Getting all purchases");
+
+            var result = _dBContext.Purchases.Include(c => c.Course)
+                .ThenInclude(o => o.Category)
+                .OrderBy(p => p.Course.Category.CategoryName).ToArray();
+
+            return result;
+        }
+
         //Delete Course
         public void DeleteCourse(Course course)
         {
@@ -340,6 +370,137 @@ namespace ELearning.Data
             _dBContext.Course.Remove(course);
             _dBContext.SaveChanges();
         }
+
+
+        //#region SERVICE DATATABLE
+        //public PagedList<_company_service_table_item> getServices(_company_service_filter filter)
+        //{
+        //    var db = new ETrustContext();
+        //    int decryptedCompanyId = int.Parse(AESCryptography.AES256_Decrypt(filter.company_id));
+        //    var services = db.Service.Where(temp => temp.CompanyId == decryptedCompanyId).Include(s => s.ServiceVariant).ToList();
+        //    var dtomodel = new List<_company_service_table_item>();
+        //    if (services != null)
+        //    {
+        //        IMapper mapper = MapperFn.companyservicetableItemmapper();
+        //        if (services != null)
+        //        {
+        //            dtomodel = mapper.Map<List<_company_service_table_item>>(services);
+        //        }
+        //        foreach (var model in dtomodel)
+        //        {
+        //            var marketCategory = db.MarketCategory.Where(temp => temp.CategoryId == int.Parse(AESCryptography.AES256_Decrypt(model.market_category.ToString()))).FirstOrDefault();
+
+        //            if (marketCategory != null)
+        //            {
+        //                model.market_category = marketCategory.CategoryName;
+        //            }
+        //        }
+        //    }
+
+        //    #region Filter
+
+        //    if (!string.IsNullOrEmpty(filter.sale_type))
+        //    {
+        //        var typeName = CommonFn.getconfigurationname(int.Parse(AESCryptography.AES256_Decrypt(filter.sale_type)));
+        //        dtomodel = dtomodel.Where(temp => temp.sale_type == typeName).ToList();
+        //    }
+
+        //    if (!string.IsNullOrEmpty(filter.category))
+        //    {
+        //        var marketCategory = db.MarketCategory.Where(temp =>
+        //        temp.CategoryId == int.Parse(AESCryptography.AES256_Decrypt(filter.category))).FirstOrDefault();
+
+        //        dtomodel = dtomodel.Where(temp => temp.market_category == marketCategory.CategoryName).ToList();
+        //    }
+        //    if (filter.price_from != null)
+        //    {
+        //        dtomodel = dtomodel.Where(temp => temp.price >= filter.price_from).ToList();
+        //    }
+        //    if (filter.price_to != null)
+        //    {
+        //        dtomodel = dtomodel.Where(temp => temp.price <= filter.price_to).ToList();
+        //    }
+
+        //    if (!string.IsNullOrEmpty(filter.service_name))
+        //    {
+        //        dtomodel = dtomodel.Where(temp => temp.service_name.Contains(filter.service_name)).ToList();
+        //    }
+        //    if (filter.with_booking != null)
+        //    {
+        //        dtomodel = dtomodel.Where(temp => temp.is_booking_purchase == filter.with_booking).ToList();
+        //    }
+        //    if (filter.service_status != null)
+        //    {
+        //        dtomodel = dtomodel.Where(temp => temp.is_active == filter.service_status).ToList();
+        //    }
+        //    #endregion
+
+        //    #region sorting
+        //    if (filter.sort_direction.ToUpper() == "ASC")
+        //    {
+        //        switch (filter.sort_column.ToLower())
+        //        {
+        //            case "name":
+        //                dtomodel = dtomodel.OrderBy(p => p.service_name).ToList();
+        //                break;
+        //            case "sale_type":
+        //                dtomodel = dtomodel.OrderBy(p => p.sale_type).ToList();
+        //                break;
+        //            case "variants":
+        //                dtomodel = dtomodel.OrderBy(p => p.variants).ToList();
+        //                break;
+        //            case "category":
+        //                dtomodel = dtomodel.OrderBy(d => d.variants).ToList();
+        //                break;
+        //            case "with_booking":
+        //                dtomodel = dtomodel.OrderBy(d => d.is_booking_purchase).ToList();
+        //                break;
+        //            case "price":
+        //                dtomodel = dtomodel.OrderBy(d => d.price).ToList();
+        //                break;
+        //            default:
+        //                dtomodel = dtomodel.OrderBy(p => p.is_active).ToList();
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        switch (filter.sort_column.ToLower())
+        //        {
+        //            case "name":
+        //                dtomodel = dtomodel.OrderByDescending(p => p.service_name).ToList();
+        //                break;
+        //            case "sale_type":
+        //                dtomodel = dtomodel.OrderByDescending(p => p.sale_type).ToList();
+        //                break;
+        //            case "variants":
+        //                dtomodel = dtomodel.OrderByDescending(p => p.variants).ToList();
+        //                break;
+        //            case "category":
+        //                dtomodel = dtomodel.OrderByDescending(d => d.variants).ToList();
+        //                break;
+        //            case "with_booking":
+        //                dtomodel = dtomodel.OrderByDescending(d => d.is_booking_purchase).ToList();
+        //                break;
+        //            case "price":
+        //                dtomodel = dtomodel.OrderByDescending(d => d.price).ToList();
+        //                break;
+        //            default:
+        //                dtomodel = dtomodel.OrderByDescending(p => p.is_active).ToList();
+        //                break;
+        //        }
+        //    }
+        //    #endregion
+
+        //    return new PagedList<_company_service_table_item>
+        //    {
+        //        Items = dtomodel.Skip((filter.page_index - 1) * filter.page_size).Take(filter.page_size),
+        //        Page = filter.page_index,
+        //        PageSize = filter.page_size,
+        //        TotalCount = dtomodel.Count()
+        //    };
+        //}
+        //#endregion
 
 
     }

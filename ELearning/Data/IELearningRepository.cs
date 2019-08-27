@@ -50,5 +50,11 @@ namespace ELearning.Data
 
         //CourseLevel
         CourseLevel GetCourseLevelById(int courseLevelId);
+        CourseLevel[] GetAllCourseLevels();
+
+        //Purchases
+        void AddPurchase(Purchases purchases);
+        Purchases[] GetAllPurchases();
+
     }
 }

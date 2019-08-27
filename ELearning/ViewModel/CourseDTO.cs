@@ -155,11 +155,18 @@ namespace ELearning.ViewModel
 
     }
 
-    //List All Course Levels
+    //List Single Course Level 
     public class CourseLevelDTO
     {
         public int CourseLevelId { get; set; }
      //   public string CourseLevelName { get; set; }
+    }
+
+    // List All Course Levels
+    public class AllCourseLevelsDTO
+    {
+        public int CourseLevelId { get; set; }
+        public string  CourseLevelName { get; set; }
     }
 
     // Post Course Info 

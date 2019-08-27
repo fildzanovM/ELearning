@@ -191,8 +191,30 @@ namespace ELearning.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to get course levels:{ex}");
-                return BadRequest("Failed to get course levels");
+                _logger.LogError($"Failed to get course level:{ex}");
+                return BadRequest("Failed to get course level");
+            }
+        }
+
+        /// <summary>
+        /// Get all course levels.
+        /// </summary>
+        /// <response code="200">Succesfully returns course level</response>
+        /// <response code="400">If the item is null</response> 
+        //Get All Course Levels
+        [HttpGet("courselevels")]
+        public ActionResult<AllCourseLevelsDTO[]> GetAllCourseLevels()
+        {
+            try
+            {
+                var result = _repository.GetAllCourseLevels();
+                IMapper mapper = ELearningProfile.AllCourseLevelsMapper();
+                return mapper.Map<AllCourseLevelsDTO[]>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to get all course levels: {ex}");
+                return BadRequest("Failed to get all course levels");
             }
         }
 

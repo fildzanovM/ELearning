@@ -9,6 +9,7 @@ namespace ELearning.Models
         {
             CourseInfo = new HashSet<CourseInfo>();
             CourseModule = new HashSet<CourseModule>();
+            Purchases = new HashSet<Purchases>();
         }
 
         public int CourseId { get; set; }
@@ -24,5 +25,6 @@ namespace ELearning.Models
         public SubCategory SubCategory { get; set; }
         public ICollection<CourseInfo> CourseInfo { get; set; }
         public ICollection<CourseModule> CourseModule { get; set; }
+        public ICollection<Purchases> Purchases { get; set; }
     }
 }

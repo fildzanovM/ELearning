@@ -21,6 +21,7 @@ namespace ELearning.Models
         public virtual DbSet<CourseInfo> CourseInfo { get; set; }
         public virtual DbSet<CourseLevel> CourseLevel { get; set; }
         public virtual DbSet<CourseModule> CourseModule { get; set; }
+        public virtual DbSet<Purchases> Purchases { get; set; }
         public virtual DbSet<SubCategory> SubCategory { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -177,6 +178,19 @@ namespace ELearning.Models
                     .HasForeignKey(d => d.CourseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__CourseMod__Cours__21B6055D");
+            });
+
+            modelBuilder.Entity<Purchases>(entity =>
+            {
+                entity.Property(e => e.CourseId).HasColumnName("CourseID");
+
+                entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Course)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Purchases__Cours__36B12243");
             });
 
             modelBuilder.Entity<SubCategory>(entity =>

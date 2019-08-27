@@ -295,5 +295,49 @@ namespace ELearning.Data
             return mapper;
         }
 
+        //Post Purchase Mapper
+        public static IMapper CoursePourchaseMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Purchases, PurchasesDTO>()
+                    .ForMember(o => o.CourseId, ex => ex.MapFrom(o => o.Course.CourseId))
+                    .ForMember(o => o.PurchaseDate, ex => ex.MapFrom(o => o.PurchaseDate))
+                    .ReverseMap();
+            });
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+        //Get All Purchases
+        public static IMapper AllPurchasesMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Purchases, GetAllPurchases>()
+                    .ForMember(o => o.PurchaseId, ex => ex.MapFrom(o => o.PurchasesId))
+                    .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.Course.CourseName))
+                    .ForMember(o => o.CategoryName, ex => ex.MapFrom(o => o.Course.Category.CategoryName))
+                    .ForMember(o => o.PurchaseDate, ex => ex.MapFrom(o => o.PurchaseDate));
+            });
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+
+        //Get all Course levels mapper
+        public static IMapper AllCourseLevelsMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CourseLevel, AllCourseLevelsDTO>()
+                    .ForMember(o => o.CourseLevelId, ex => ex.MapFrom(o => o.CourseLevelId))
+                    .ForMember(o => o.CourseLevelName, ex => ex.MapFrom(o => o.CourseLevelName));
+            });
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+
     }
 }

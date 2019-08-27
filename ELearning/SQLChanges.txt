@@ -2,3 +2,12 @@
 ALTER COLUMN CoursePrice float
 
 Scaffold-DbContext "Server=DESKTOP-HR3RL14\EXPRESSSQL;Database=ELearningDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f
+
+
+--New Table Purchases
+
+CREATE TABLE Purchases(
+	PurchasesId int PRIMARY KEY IDENTITY (1,1) NOT NULL,
+	CourseID int FOREIGN KEY REFERENCES Course(CourseID) NOT NULL,
+	PurchaseDate datetime NOT NULL
+);
