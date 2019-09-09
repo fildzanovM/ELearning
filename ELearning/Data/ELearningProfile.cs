@@ -339,5 +339,46 @@ namespace ELearning.Data
             return mapper;
         }
 
+        //Purchase Filter DTO
+        public static IMapper PurchaseFilterMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Purchases, Sorted_Purchases_DTO>()
+                    .ForMember(o => o.PurchaseId, ex => ex.MapFrom(o => o.PurchasesId))
+                    .ForMember(o => o.CourseId, ex => ex.MapFrom(o => o.Course.CourseId))
+                    .ForMember(o => o.CourseName, ex => ex.MapFrom(o => o.Course.CourseName))
+                    .ForMember(o => o.CategoryName, ex => ex.MapFrom(o => o.Course.Category.CategoryName))
+                    .ForMember(o => o.CategoryId, ex => ex.MapFrom(o => o.Course.Category.CategoryId))
+                    .ForMember(o => o.PurchaseDate, ex => ex.MapFrom(o => o.PurchaseDate));
+            });
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+
+        public static IMapper PurchasesByWeeks()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Course, Purchases_by_Weeks>()
+                   .ForMember(o => o.WeeklyPurchases, ex => ex.MapFrom(o => o.Purchases));
+
+                cfg.CreateMap<Category, Weekly_Purchases_ByCategory>();
+
+                cfg.CreateMap<Purchases, Weekly_Purchases>()
+                    .ForMember(o => o.WeekDate, ex => ex.MapFrom(o => o.PurchaseDate))
+                    .ForMember(o => o.WeekStart, ex => ex.MapFrom(o => o.PurchaseDate))
+                    .ForMember(o => o.Categories, ex => ex.MapFrom(o => o.Course.Category))
+                    .ForMember(o => o.CourseId, ex => ex.MapFrom(o => o.Course.CourseId));
+            
+            });
+
+          
+
+            IMapper mapper = config.CreateMapper();
+            return mapper;
+        }
+
     }
 }

@@ -1,9 +1,11 @@
-﻿using ELearning.Models;
+﻿using AutoMapper;
+using ELearning.Models;
 using ELearning.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace ELearning.Data
     {
         private readonly ELearningDBContext _dBContext;
         private readonly ILogger<ELearningRepository> _logger;
+        private int weekNum;
 
         public ELearningRepository(ELearningDBContext dBContext, ILogger<ELearningRepository> logger)
         {
@@ -371,137 +374,184 @@ namespace ELearning.Data
             _dBContext.SaveChanges();
         }
 
+        //Sorting Purchases
+        public PagedList<Sorted_Purchases_DTO> GetSortedPurchases(Purchase_Filter filter)
+        {
+            _logger.LogInformation("Getting sorted purchases");
+            var purchases = _dBContext.Purchases
+                    .Include(o => o.Course)
+                    .ThenInclude(o => o.Category).ToList();
 
-        //#region SERVICE DATATABLE
-        //public PagedList<_company_service_table_item> getServices(_company_service_filter filter)
-        //{
-        //    var db = new ETrustContext();
-        //    int decryptedCompanyId = int.Parse(AESCryptography.AES256_Decrypt(filter.company_id));
-        //    var services = db.Service.Where(temp => temp.CompanyId == decryptedCompanyId).Include(s => s.ServiceVariant).ToList();
-        //    var dtomodel = new List<_company_service_table_item>();
-        //    if (services != null)
-        //    {
-        //        IMapper mapper = MapperFn.companyservicetableItemmapper();
-        //        if (services != null)
-        //        {
-        //            dtomodel = mapper.Map<List<_company_service_table_item>>(services);
-        //        }
-        //        foreach (var model in dtomodel)
-        //        {
-        //            var marketCategory = db.MarketCategory.Where(temp => temp.CategoryId == int.Parse(AESCryptography.AES256_Decrypt(model.market_category.ToString()))).FirstOrDefault();
-
-        //            if (marketCategory != null)
-        //            {
-        //                model.market_category = marketCategory.CategoryName;
-        //            }
-        //        }
-        //    }
-
-        //    #region Filter
-
-        //    if (!string.IsNullOrEmpty(filter.sale_type))
-        //    {
-        //        var typeName = CommonFn.getconfigurationname(int.Parse(AESCryptography.AES256_Decrypt(filter.sale_type)));
-        //        dtomodel = dtomodel.Where(temp => temp.sale_type == typeName).ToList();
-        //    }
-
-        //    if (!string.IsNullOrEmpty(filter.category))
-        //    {
-        //        var marketCategory = db.MarketCategory.Where(temp =>
-        //        temp.CategoryId == int.Parse(AESCryptography.AES256_Decrypt(filter.category))).FirstOrDefault();
-
-        //        dtomodel = dtomodel.Where(temp => temp.market_category == marketCategory.CategoryName).ToList();
-        //    }
-        //    if (filter.price_from != null)
-        //    {
-        //        dtomodel = dtomodel.Where(temp => temp.price >= filter.price_from).ToList();
-        //    }
-        //    if (filter.price_to != null)
-        //    {
-        //        dtomodel = dtomodel.Where(temp => temp.price <= filter.price_to).ToList();
-        //    }
-
-        //    if (!string.IsNullOrEmpty(filter.service_name))
-        //    {
-        //        dtomodel = dtomodel.Where(temp => temp.service_name.Contains(filter.service_name)).ToList();
-        //    }
-        //    if (filter.with_booking != null)
-        //    {
-        //        dtomodel = dtomodel.Where(temp => temp.is_booking_purchase == filter.with_booking).ToList();
-        //    }
-        //    if (filter.service_status != null)
-        //    {
-        //        dtomodel = dtomodel.Where(temp => temp.is_active == filter.service_status).ToList();
-        //    }
-        //    #endregion
-
-        //    #region sorting
-        //    if (filter.sort_direction.ToUpper() == "ASC")
-        //    {
-        //        switch (filter.sort_column.ToLower())
-        //        {
-        //            case "name":
-        //                dtomodel = dtomodel.OrderBy(p => p.service_name).ToList();
-        //                break;
-        //            case "sale_type":
-        //                dtomodel = dtomodel.OrderBy(p => p.sale_type).ToList();
-        //                break;
-        //            case "variants":
-        //                dtomodel = dtomodel.OrderBy(p => p.variants).ToList();
-        //                break;
-        //            case "category":
-        //                dtomodel = dtomodel.OrderBy(d => d.variants).ToList();
-        //                break;
-        //            case "with_booking":
-        //                dtomodel = dtomodel.OrderBy(d => d.is_booking_purchase).ToList();
-        //                break;
-        //            case "price":
-        //                dtomodel = dtomodel.OrderBy(d => d.price).ToList();
-        //                break;
-        //            default:
-        //                dtomodel = dtomodel.OrderBy(p => p.is_active).ToList();
-        //                break;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        switch (filter.sort_column.ToLower())
-        //        {
-        //            case "name":
-        //                dtomodel = dtomodel.OrderByDescending(p => p.service_name).ToList();
-        //                break;
-        //            case "sale_type":
-        //                dtomodel = dtomodel.OrderByDescending(p => p.sale_type).ToList();
-        //                break;
-        //            case "variants":
-        //                dtomodel = dtomodel.OrderByDescending(p => p.variants).ToList();
-        //                break;
-        //            case "category":
-        //                dtomodel = dtomodel.OrderByDescending(d => d.variants).ToList();
-        //                break;
-        //            case "with_booking":
-        //                dtomodel = dtomodel.OrderByDescending(d => d.is_booking_purchase).ToList();
-        //                break;
-        //            case "price":
-        //                dtomodel = dtomodel.OrderByDescending(d => d.price).ToList();
-        //                break;
-        //            default:
-        //                dtomodel = dtomodel.OrderByDescending(p => p.is_active).ToList();
-        //                break;
-        //        }
-        //    }
-        //    #endregion
-
-        //    return new PagedList<_company_service_table_item>
-        //    {
-        //        Items = dtomodel.Skip((filter.page_index - 1) * filter.page_size).Take(filter.page_size),
-        //        Page = filter.page_index,
-        //        PageSize = filter.page_size,
-        //        TotalCount = dtomodel.Count()
-        //    };
-        //}
-        //#endregion
+            var dtomodel = new List<Sorted_Purchases_DTO>();
 
 
+            if (purchases != null)
+            {
+                IMapper mapper = ELearningProfile.PurchaseFilterMapper();
+                dtomodel = mapper.Map<List<Sorted_Purchases_DTO>>(purchases);
+            }
+
+            if (!string.IsNullOrEmpty(filter.CourseName))
+            {
+                dtomodel = dtomodel.Where(temp => temp.CourseName == filter.CourseName).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(filter.CategoryName))
+            {
+                dtomodel = dtomodel.Where(temp => temp.CategoryName == filter.CategoryName).ToList();
+            }
+
+            
+            if(filter.Sort_direction.ToUpper() == "ASC")
+            {
+                switch (filter.Sort_column.ToLower())
+                {
+                    case "purchaseid":
+                        dtomodel = dtomodel.OrderBy(o => o.PurchaseId).ToList();
+                        break;
+
+                    case "courseid":
+                        dtomodel = dtomodel.OrderBy(o => o.CourseId).ToList();
+                        break;
+
+                    case "categoryid":
+                        dtomodel = dtomodel.OrderBy(o => o.CategoryId).ToList();
+                        break;
+
+                    case "categoryname":
+                        dtomodel = dtomodel.OrderBy(o => o.CategoryName).ToList();
+                        break;
+
+                    case "purchasedate":
+                        dtomodel = dtomodel.OrderBy(o => o.PurchaseDate).ToList();
+                        break;
+                }
+            }
+
+            else
+            {
+                switch (filter.Sort_column.ToLower())
+                {
+                    case "purchaseid":
+                        dtomodel = dtomodel.OrderByDescending(o => o.PurchaseId).ToList();
+                        break;
+
+                    case "courseid":
+                        dtomodel = dtomodel.OrderByDescending(o => o.CourseId).ToList();
+                        break;
+
+                    case "categoryid":
+                        dtomodel = dtomodel.OrderByDescending(o => o.CategoryId).ToList();
+                        break;
+
+                    case "categoryname":
+                        dtomodel = dtomodel.OrderByDescending(o => o.CategoryName).ToList();
+                        break;
+
+                    case "purchasedate":
+                        dtomodel = dtomodel.OrderByDescending(o => o.PurchaseDate).ToList();
+                        break;
+                }
+
+            }
+
+            return new PagedList<Sorted_Purchases_DTO>
+            {
+                Items = dtomodel.Skip((filter.Page_index - 1) * filter.Page_size).Take(filter.Page_size),
+                Page = filter.Page_index,
+                PageSize = filter.Page_size,
+                TotalCount = dtomodel.Count()
+            };
+        }
+
+        public List<WeekDTO> PurchasesByWeeks()
+        {
+            var weeksInMonth = GetWeeks();
+            int index = 0;
+
+            var weeks = new List<WeekDTO>();
+            while (index != weeksInMonth.Count)
+            {
+                var results = _dBContext.Purchases
+                .Where(x => x.PurchaseDate.Date >= weeksInMonth[index].Item1 || x.PurchaseDate.Date <= weeksInMonth[index].Item2)
+                .Include(x => x.Course)
+                    .ThenInclude(x => x.Category)
+                .Select(x => new CoursePurchasedNumberByCategoryDTO
+                {
+                    CategoryName = x.Course.Category.CategoryName,
+                    PurchasedCount = x.Course.Purchases.Count
+                })
+                .ToList();
+
+                weeks.Add(new WeekDTO { Id = index, Categories = results, StartDate = weeksInMonth[index].Item1, EndDate = weeksInMonth[index].Item2 } );
+                ++index;
+            }
+
+            return weeks;
+        }
+
+        private static List<Tuple<DateTime,DateTime>> GetWeeks()
+        {
+            DateTime reference = DateTime.Now;
+            Calendar calendar = CultureInfo.CurrentCulture.Calendar;
+
+            IEnumerable<int> daysInMonth = Enumerable.Range(1, calendar.GetDaysInMonth(reference.Year, reference.Month));
+
+            List<Tuple<DateTime, DateTime>> weeks = daysInMonth.Select(day => new DateTime(reference.Year, reference.Month, day))
+                .GroupBy(d => calendar.GetWeekOfYear(d, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday))
+                .Select(g => new Tuple<DateTime, DateTime>(g.First(), g.Last()))
+                .ToList();
+
+            weeks.ForEach(x => Console.WriteLine("{0:MM/dd/yyyy} - {1:MM/dd/yyyy}", x.Item1, x.Item2));
+
+            return weeks;
+        }
+
+        //var categoryNames = new List<string>();
+
+        //var myList = _dBContext.Category.Select(o => o.CategoryName).ToList();
+
+        //categoryNames.AddRange(myList);
+
+        //To calculate last four weeks purchases
+        public Dictionary<string, int> CalculateWeeklyPurchases()
+        {
+            DayOfWeek weekStart = DayOfWeek.Monday;
+            DateTime startingDate = DateTime.Today;
+
+            while (startingDate.DayOfWeek != weekStart)
+                startingDate = startingDate.AddDays(-1);
+
+            DateTime previousWeekStart =  startingDate.AddDays(-7);
+            DateTime previousWeekEnd = startingDate.AddDays(-1);
+
+            List<Purchases> listAllPurchases = new List<Purchases>();
+            Dictionary<string, int> dictionaryWeeklySum = new Dictionary<string, int>();
+
+
+            var webDevelopmentSum = _dBContext.Purchases
+                .Include(o => o.Course.Category.CategoryName)
+                .Where(o => o.PurchaseDate > startingDate)
+                .Select(cat => cat.Course.Purchases).Count();
+
+            var mobileAppsSum = _dBContext.Purchases
+                .Where(cat => cat.Course.Category.CategoryName == "Mobile Apps" && (cat.PurchaseDate > startingDate))
+                .Select(cat => cat.Course.Purchases).Count();
+
+            var databasesSum = _dBContext.Purchases.Where
+                (cat => cat.Course.Category.CategoryName == "Databases" && (cat.PurchaseDate > startingDate))
+                .Select(cat => cat.Course.Purchases).Count();
+
+            var eCommerceSum = _dBContext.Purchases.Where
+                (cat => cat.Course.Category.CategoryName == "E-Commerce" && (cat.PurchaseDate > startingDate))
+                .Select(cat => cat.Course.Purchases).Count();
+
+            dictionaryWeeklySum.Add("Web Development", webDevelopmentSum);
+            dictionaryWeeklySum.Add("Mobile Apps", mobileAppsSum);
+            dictionaryWeeklySum.Add("Databases", databasesSum);
+            dictionaryWeeklySum.Add("E-Commerce", eCommerceSum);
+           
+            return dictionaryWeeklySum;
+        }
     }
 }

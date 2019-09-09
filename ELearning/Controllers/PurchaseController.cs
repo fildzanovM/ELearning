@@ -57,7 +57,7 @@ namespace ELearning.Data
         /// <summary>
         /// Get all purchases.
         /// </summary>
-        /// <response code="200">Succesfully created course</response>
+        /// <response code="200">Succesfully returned all purchases</response>
         /// <response code="400">If the item is null</response> 
         //Get all Purchases
         [HttpGet("purchases")]
@@ -77,5 +77,60 @@ namespace ELearning.Data
             }
         }
 
+        /// <summary>
+        /// Sort all purchases.
+        /// </summary>
+        /// <response code="200">Succesfully sorted purchases</response>
+        /// <response code="400">If the item is null</response> 
+        //Sort all Purchases
+        [HttpPost("sorted/purchases")]
+        public IActionResult SortedPurchases(Purchase_Filter filter)
+        {
+            try
+            {
+                if(filter == null)
+                {
+                    return new NotFoundObjectResult(new { message = "Bad Request: Item missing.", statusCode = HttpStatusCode.BadRequest });
+                }
+
+                var result = _repository.GetSortedPurchases(filter);
+                return new ObjectResult(new { message = "Success", statusCode = HttpStatusCode.OK, response = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to sort purchases: {ex}");
+                return BadRequest("Failed to sort purchases");
+            }
+        }
+
+        [HttpGet("weeklypurchases")]
+        public JsonResult GetWeeklyPurchases()
+        {
+       
+                Dictionary<string, int> weeklyPurchases = _repository.CalculateWeeklyPurchases();
+                return new JsonResult(weeklyPurchases);
+            
+        }
+
+        [HttpGet("purchasesbyweek")]
+        public ActionResult<List<WeekDTO>> GetPurchasesByWeeks()
+        {
+            try
+            {
+                //var result = _repository.PurchasesByWeeks();
+                //IMapper mapper = ELearningProfile.PurchasesByWeeks();
+
+                //return mapper.Map<Purchases_by_Weeks[]>(result);
+
+                var result = _repository.PurchasesByWeeks();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to sort purchases: {ex}");
+                return BadRequest("Failed to sort purchases");
+            }
+        }
     }
 }

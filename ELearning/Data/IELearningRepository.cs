@@ -1,4 +1,6 @@
 ﻿using ELearning.Models;
+using ELearning.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -55,6 +57,11 @@ namespace ELearning.Data
         //Purchases
         void AddPurchase(Purchases purchases);
         Purchases[] GetAllPurchases();
+        PagedList<Sorted_Purchases_DTO> GetSortedPurchases(Purchase_Filter filter);
+        Dictionary<string, int> CalculateWeeklyPurchases();
+
+        List<WeekDTO>PurchasesByWeeks();
+
 
     }
 }
