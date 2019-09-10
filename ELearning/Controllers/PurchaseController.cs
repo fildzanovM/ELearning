@@ -117,11 +117,6 @@ namespace ELearning.Data
         {
             try
             {
-                //var result = _repository.PurchasesByWeeks();
-                //IMapper mapper = ELearningProfile.PurchasesByWeeks();
-
-                //return mapper.Map<Purchases_by_Weeks[]>(result);
-
                 var result = _repository.PurchasesByWeeks();
 
                 return result;
@@ -130,6 +125,22 @@ namespace ELearning.Data
             {
                 _logger.LogError($"Failed to sort purchases: {ex}");
                 return BadRequest("Failed to sort purchases");
+            }
+        }
+
+        [HttpGet("coursecount")]
+        public ActionResult<List<CategoryCoursesPurchasesCountDTO>> GetCountCourses()
+        {
+            try
+            {
+                var result = _repository.CoursesByCategoryCount();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to count courses: {ex}");
+                return BadRequest();
             }
         }
     }

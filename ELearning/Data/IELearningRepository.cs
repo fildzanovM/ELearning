@@ -61,6 +61,7 @@ namespace ELearning.Data
         Dictionary<string, int> CalculateWeeklyPurchases();
 
         List<WeekDTO>PurchasesByWeeks();
+        List<CategoryCoursesPurchasesCountDTO> CoursesByCategoryCount();
 
 
     }

@@ -14,13 +14,20 @@ namespace ELearning.ViewModel
 
         public DateTime EndDate { get; set; }
 
-        public List<CoursePurchasedNumberByCategoryDTO> Categories { get; set; }
+        public List<CategoryCoursesPurchasesCountDTO> Categories { get; set; }
     }
 
-    public class CoursePurchasedNumberByCategoryDTO
+    public class CategoryCoursesPurchasesCountDTO
     {
         public string CategoryName { get; set; }
 
-        public int PurchasedCount { get; set; }
+        public int CoursesPurchasesCount { get; set; }
+    }
+
+    public class CoursesPurchasesCountDTO
+    {
+        public string CourseName { get; set; }
+
+        public int PurchasesCount { get; set; }
     }
 }

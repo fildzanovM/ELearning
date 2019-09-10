@@ -466,52 +466,73 @@ namespace ELearning.Data
 
         public List<WeekDTO> PurchasesByWeeks()
         {
-            var weeksInMonth = GetWeeks();
-            int index = 0;
+            var weeksInMonth = GetWeeksInMonth(9, 2019);
 
             var weeks = new List<WeekDTO>();
-            while (index != weeksInMonth.Count)
+            for (var i = 0; i < weeksInMonth.Count; i++)
             {
-                var results = _dBContext.Purchases
-                .Where(x => x.PurchaseDate.Date >= weeksInMonth[index].Item1 || x.PurchaseDate.Date <= weeksInMonth[index].Item2)
-                .Include(x => x.Course)
-                    .ThenInclude(x => x.Category)
-                .Select(x => new CoursePurchasedNumberByCategoryDTO
-                {
-                    CategoryName = x.Course.Category.CategoryName,
-                    PurchasedCount = x.Course.Purchases.Count
-                })
-                .ToList();
+                var categoriesWithCourseNamesAndPurchasesCountByWeek = _dBContext.Category
+                                 .Include(x => x.Course)
+                                     .ThenInclude(p => p.Purchases)
+                                 .Select(category => new CategoryCoursesPurchasesCountDTO
+                                 {
+                                     CategoryName = category.CategoryName,
+                                     CoursesPurchasesCount = category.Course.Select(x => new
+                                     {
+                                         PurchasesCount = x.Purchases.Where(pur => pur.PurchaseDate >= weeksInMonth.ElementAt(i).Item1 &&
+                                                                  pur.PurchaseDate <= weeksInMonth.ElementAt(i).Item2)
+                                                                          .Count(),
+                                     }).Sum(x => x.PurchasesCount)
+                                 })
+                                 .ToList();
 
-                weeks.Add(new WeekDTO { Id = index, Categories = results, StartDate = weeksInMonth[index].Item1, EndDate = weeksInMonth[index].Item2 } );
-                ++index;
+                var week = new WeekDTO
+                {
+                    Id = i,
+                    Categories = categoriesWithCourseNamesAndPurchasesCountByWeek,
+                    StartDate = weeksInMonth.ElementAt(i).Item1,
+                    EndDate = weeksInMonth.ElementAt(i).Item2
+                };
+
+                weeks.Add(week);
             }
 
             return weeks;
         }
 
-        private static List<Tuple<DateTime,DateTime>> GetWeeks()
+        private static List<Tuple<DateTime, DateTime>> GetWeeksInMonth(int month, int year)
         {
-            DateTime reference = DateTime.Now;
+            DateTime reference = new DateTime(year, month, 1);
             Calendar calendar = CultureInfo.CurrentCulture.Calendar;
 
             IEnumerable<int> daysInMonth = Enumerable.Range(1, calendar.GetDaysInMonth(reference.Year, reference.Month));
 
             List<Tuple<DateTime, DateTime>> weeks = daysInMonth.Select(day => new DateTime(reference.Year, reference.Month, day))
-                .GroupBy(d => calendar.GetWeekOfYear(d, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Sunday))
+                .GroupBy(d => calendar.GetWeekOfYear(d, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday))
                 .Select(g => new Tuple<DateTime, DateTime>(g.First(), g.Last()))
                 .ToList();
 
-            weeks.ForEach(x => Console.WriteLine("{0:MM/dd/yyyy} - {1:MM/dd/yyyy}", x.Item1, x.Item2));
-
             return weeks;
         }
+        public List<CategoryCoursesPurchasesCountDTO> CoursesByCategoryCount()
+        {
+            _logger.LogInformation("Counting courses by category");
 
-        //var categoryNames = new List<string>();
+            var coursesByCategoryCount = _dBContext.Category
+                .Include(o => o.Course)
+                    .ThenInclude(o => o.Purchases)
+                .Select(cat => new CategoryCoursesPurchasesCountDTO
+                {
+                    CategoryName = cat.CategoryName,
+                    CoursesPurchasesCount = cat.Course.Select(x => new
+                    {
+                        PurchasesCount = x.Purchases.Count(),
+                    }).Sum(i => i.PurchasesCount)
+                    
+                });
 
-        //var myList = _dBContext.Category.Select(o => o.CategoryName).ToList();
-
-        //categoryNames.AddRange(myList);
+            return coursesByCategoryCount.ToList();    
+        }
 
         //To calculate last four weeks purchases
         public Dictionary<string, int> CalculateWeeklyPurchases()
@@ -530,9 +551,9 @@ namespace ELearning.Data
 
 
             var webDevelopmentSum = _dBContext.Purchases
-                .Include(o => o.Course.Category.CategoryName)
-                .Where(o => o.PurchaseDate > startingDate)
+                .Where(cat => cat.Course.Category.CategoryName == "WebDevelopment" && cat.PurchaseDate > startingDate)
                 .Select(cat => cat.Course.Purchases).Count();
+               
 
             var mobileAppsSum = _dBContext.Purchases
                 .Where(cat => cat.Course.Category.CategoryName == "Mobile Apps" && (cat.PurchaseDate > startingDate))
